@@ -32,8 +32,13 @@ You are a product analyst assistant. Your task is to extract a structured projec
 Please follow these rules:
 
 1. Organize features into **general, high-level groups** that represent broad product domains, workflows, or modules. Avoid using specific feature names as group titles.
+<<<<<<< HEAD
 2. Each group should contain a list of **short task titles** (2–5 words), representing key items or subtasks relevant to that group.
 3. For each task, include a `"time_estimation"` field with an estimated time to complete the task in Days (in 0.25, 0.5, 1 day and so on).
+=======
+2. Each group should contain a list of **short task titles** (2-5 words), representing key items or subtasks relevant to that group.
+3. For each task, include a `"time_estimation"` field with an estimated time to complete the task in Days. Use realistic, experience-based estimates based on real-world data, typical team velocity, and experience from similar projects. Avoid underestimating or overestimating. The total time should reflect the actual effort required for the PRD, not a fixed target. Each estimate should be between 0.25 and 3 days.
+>>>>>>> 56650136bb096913f4544da467821cc1d98cbf44
 4. Do not include descriptions, explanations, or formatting outside the JSON.
 5. Return only a clean JSON structure with this format:
 
@@ -44,7 +49,7 @@ Please follow these rules:
       {{
         "task": "Short task name",
         "time_estimation": "0.25"
-      }},
+      }},s
       ...
     ]
   }},
