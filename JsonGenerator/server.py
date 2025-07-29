@@ -3,54 +3,62 @@ import fitz  # PyMuPDF for reading PDFs
 import os
 from dotenv import load_dotenv
 
-# Load .env and set API key
+# Load .env file and get the API key
 load_dotenv()
 openai.api_key = os.getenv("API_KEY")
 
-# Extract text from PRD PDF
+# Function to extract text from a PDF file
 def extract_text_from_pdf(file_path):
     doc = fitz.open(file_path)
     return "\n".join(page.get_text() for page in doc)
 
-# PDF input
-file_path = "/Users/sharons/Desktop/PRD-EventFlow .pdf"
-pdf_text = extract_text_from_pdf(file_path)
-chunk = pdf_text[:4000]  # Trim for token limits if needed
+# Set the file path to the PRD PDF
+file_path = os.path.join(os.path.dirname(__file__), "Files", "file.pdf")
 
-# Prompt GPT to generate board-style JSON
+# Read and optionally trim the PDF text for context length
+pdf_text = extract_text_from_pdf(file_path)
+chunk = pdf_text[:4000]  # GPT-3.5-turbo max context is ~4096 tokens
+
+# Use OpenAI to convert PRD into JSON of groups and items
 response = openai.ChatCompletion.create(
     model="gpt-3.5-turbo",
     messages=[
         {
             "role": "system",
-            "content": "You are an expert product analyst. Your job is to extract board-style project planning data from PRDs and return it in JSON format for Monday-style task boards."
+            "content": "You are a product analyst assistant. You help turn PRDs into structured boards for development planning."
         },
         {
             "role": "user",
-            "content": f"""Here is a PRD document. Please identify the main product areas (groups) and list the initial tasks (items) needed for each.
-For each item, return the following fields: item name, short description, person (if known), status, priority, sprint, time estimation (in hours), timeline (start–end), actual timeline (if known).
-Return JSON in this format:
+     "content": f"""
+You are a product analyst assistant. Your task is to extract a structured project board from the following PRD.
+
+Please follow these rules:
+
+1. Organize features into **general, high-level groups** that represent broad product domains, workflows, or modules. Avoid using specific feature names as group titles.
+2. Each group should contain a list of **short task titles** (2-5 words), representing key items or subtasks relevant to that group.
+3. Do not include descriptions, explanations, or formatting outside the JSON.
+4. Return only a clean JSON structure with this format:
 
 [
   {{
-    "group": "Home Page",
+    "group": "General Topic Name",
     "items": [
-      {{
-        "item": "Header",
-        "description": "Build top navigation bar with logo and menu",
-      }},
+      "Short task name",
+      "Short task name",
       ...
     ]
   }},
   ...
 ]
 
-Now extract from this PRD:
+Here is the PRD:
+---
 {chunk}
+---
 """
         }
     ]
 )
 
-# Output result
+# Output the structured board-style JSON
 print(response['choices'][0]['message']['content'])
