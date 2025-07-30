@@ -1,26 +1,46 @@
-import json
+from fastapi import FastAPI, UploadFile, File, Form
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from JsonGenerator.groupsGenerator import generate_groups_from_pdf
 from mondayCreation.boardCreation import create_full_board
+import json
 
-def main():
-    boardName = "Example PRD"
+app = FastAPI()
 
-    print(" Extracting project structure from PRD")
-    raw_response = generate_groups_from_pdf()
-    
-    print("\n Raw Response from OpenAI:\n")
+# CORS setup – allow frontend connection (adjust origins as needed)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # ⚠️ In production, replace "*" with specific frontend URL
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+@app.post("/generate-board/")
+async def generate_board(
+    file: UploadFile = File(...),
+    board_name: str = Form(...),
+    monday_api_key: str = Form(...)
+):
+    # Step 1: Extract structured tasks from PDF
+    try:
+        print("Extracting project structure from PRD...")
+        raw_response = generate_groups_from_pdf(file.file)  # or use BytesIO(await file.read())
+    except Exception as e:
+        return JSONResponse(status_code=400, content={"error": f"Failed to parse PDF: {str(e)}"})
+
+    print("Raw Response from OpenAI:")
     print(raw_response)
 
+    # Step 2: Parse OpenAI output into board structure
     try:
         board_data = json.loads(raw_response)
     except json.JSONDecodeError as e:
-        print(f"\n Failed to decode JSON: {e}")
-        return
+        return JSONResponse(status_code=400, content={"error": f"Invalid JSON: {str(e)}"})
 
-    print("\n Generated Board Data:\n")
-    print(json.dumps(board_data, indent=2))
+    print("Creating board on Monday.com...")
 
-    print("\n Creating board on Monday")
+    # Step 3: Define additional columns
     extra_columns = [
         {"title": "Person", "type": "people"},
         {"title": "Status", "type": "status"},
@@ -41,7 +61,10 @@ def main():
         {"title": "Actual Timeline", "type": "timeline"}
     ]
 
-    create_full_board(boardName, board_data, extra_columns)
+    # Step 4: Create the Monday board
+    try:
+        create_full_board(board_name, board_data, extra_columns, api_key=monday_api_key)
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"error": f"Board creation failed: {str(e)}"})
 
-if __name__ == "__main__":
-    main()
+    return {"message": f"Board '{board_name}' created successfully!"}

@@ -1,5 +1,5 @@
 import openai
-import fitz  
+import fitz  # PyMuPDF
 import os
 import json
 import re
@@ -8,16 +8,14 @@ from dotenv import load_dotenv
 load_dotenv()
 openai.api_key = os.getenv("API_KEY")
 
-def extract_text_from_pdf(file_path):
-    doc = fitz.open(file_path)
-    return "\n".join(page.get_text() for page in doc)
-
 def split_text(text, max_length=4000):
     return [text[i:i+max_length] for i in range(0, len(text), max_length)]
 
-def generate_groups_from_pdf():
-    file_path = os.path.join(os.path.dirname(__file__), "Files", "file.pdf")
-    pdf_text = extract_text_from_pdf(file_path)
+def generate_groups_from_pdf(file_stream):
+    # ✅ Extract text directly from uploaded PDF stream
+    doc = fitz.open(stream=file_stream.read(), filetype="pdf")
+    pdf_text = "\n".join(page.get_text() for page in doc)
+
     chunks = split_text(pdf_text, 4000)
     all_groups = []
 
@@ -78,12 +76,5 @@ def generate_groups_from_pdf():
         if isinstance(g, dict) and g.get("group") and g.get("items")
     ]
 
-    # Save merged groups to mondayCreation/board_data.json
-    output_dir = os.path.join(os.path.dirname(__file__), "../mondayCreation")
-    os.makedirs(output_dir, exist_ok=True)
-    output_path = os.path.join(output_dir, "board_data.json")
-    with open(output_path, "w") as f:
-        json.dump(all_groups, f)
-
-    print(f"✅ JSON saved to {output_path}")
+    print("✅ PRD converted to board structure")
     return json.dumps(all_groups)
