@@ -3,7 +3,7 @@ from JsonGenerator.groupsGenerator import generate_groups_from_pdf
 from mondayCreation.boardCreation import create_full_board
 
 def main():
-    boardName = "PRD Project Board"
+    boardName = "Example PRD"
 
     print(" Extracting project structure from PRD")
     raw_response = generate_groups_from_pdf()
