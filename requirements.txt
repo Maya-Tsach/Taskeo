@@ -1,0 +1,4 @@
+openai
+flask
+pdfplumber
+PyPDF2
