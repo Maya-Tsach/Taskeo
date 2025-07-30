@@ -3,12 +3,14 @@ import json
 import requests
 from dotenv import load_dotenv
 
-# Load .env from sibling folder
-dotenv_path = os.path.join(os.path.dirname(__file__), "../JsonGenerator/.env")
+# Load .env 
+dotenv_path = os.path.join(os.path.dirname(__file__), "../.env")
 load_dotenv(dotenv_path)
 
 API_KEY = os.getenv("MONDAY_API_KEY")
 API_URL = "https://api.monday.com/v2"
+
+print("API_KEY:", repr(API_KEY))
 
 HEADERS = {
     "Authorization": API_KEY,
@@ -127,3 +129,16 @@ def create_full_board(board_name, board_data):
             )
 
     print(f"✅ Done! Board '{board_name}' created successfully.")
+
+
+if __name__ == "__main__":
+    print("Script started")
+
+    # Load board structure from JSON file
+    json_file_path = os.path.join(os.path.dirname(__file__), "board_data.json")
+
+    with open(json_file_path, "r") as f:
+        board_data = json.load(f)
+
+    board_name = "Maya Board"  # You can also read this from .env if you want
+    create_full_board(board_name, board_data)

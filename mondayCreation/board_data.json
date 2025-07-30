@@ -1,0 +1,140 @@
+
+[
+  {
+    "group": "Tech Requirements",
+    "items": [
+      {
+        "task": "Implement Pokemon interface",
+        "time_estimation": "1"
+      },
+      {
+        "task": "Utilize React for UI",
+        "time_estimation": "0.5"
+      },
+      {
+        "task": "Implement page navigation",
+        "time_estimation": "0.5"
+      }
+    ]
+  },
+  {
+    "group": "General Components",
+    "items": [
+      {
+        "task": "Implement navigation bar",
+        "time_estimation": "0.5"
+      },
+      {
+        "task": "Design main pages",
+        "time_estimation": "1"
+      }
+    ]
+  },
+  {
+    "group": "All Pokemons - Main Page",
+    "items": [
+      {
+        "task": "Implement sorting options",
+        "time_estimation": "0.75"
+      },
+      {
+        "task": "Implement table with pagination",
+        "time_estimation": "1"
+      },
+      {
+        "task": "Implement search functionality",
+        "time_estimation": "0.75"
+      },
+      {
+        "task": "Display empty state",
+        "time_estimation": "0.25"
+      },
+      {
+        "task": "Implement popup for Pokemon info",
+        "time_estimation": "0.5"
+      },
+      {
+        "task": "Display owned Pokemon indicator",
+        "time_estimation": "0.25"
+      },
+      {
+        "task": "Add toggle button for Pokemon view",
+        "time_estimation": "0.25"
+      },
+      {
+        "task": "Implement cards view",
+        "time_estimation": "0.5"
+      }
+    ]
+  },
+  {
+    "group": "Fight Simulator",
+    "items": [
+      {
+        "task": "Choose Pokemon for battle",
+        "time_estimation": "0.5"
+      },
+      {
+        "task": "Implement battle logic",
+        "time_estimation": "1"
+      },
+      {
+        "task": "Implement fight end conditions",
+        "time_estimation": "0.75"
+      },
+      {
+        "task": "Add animation effects",
+        "time_estimation": "0.5"
+      }
+    ]
+  },
+  {
+    "group": "Catch Mechanism",
+    "items": [
+      {
+        "task": "Determine catch rate",
+        "time_estimation": "0.5"
+      },
+      {
+        "task": "Determine max tries",
+        "time_estimation": "0.5"
+      }
+    ]
+  },
+  {
+    "group": "Random Mechanism",
+    "items": [
+      {
+        "task": "Introduce randomness",
+        "time_estimation": "0.5"
+      }
+    ]
+  },
+  {
+    "group": "Attack Miss Mechanism",
+    "items": [
+      {
+        "task": "Determine miss chance",
+        "time_estimation": "0.5"
+      }
+    ]
+  },
+  {
+    "group": "Type Advantages",
+    "items": [
+      {
+        "task": "Implement type advantages",
+        "time_estimation": "0.5"
+      }
+    ]
+  },
+  {
+    "group": "Game Balance",
+    "items": [
+      {
+        "task": "Ensure game balance",
+        "time_estimation": "1"
+      }
+    ]
+  }
+]

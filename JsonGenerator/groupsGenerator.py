@@ -1,5 +1,5 @@
 import openai
-import fitz  # PyMuPDF
+import fitz  
 import os
 import json
 import re
@@ -30,15 +30,9 @@ def generate_groups_from_pdf():
 You are a product analyst assistant. Your task is to extract a structured project board from the following PRD.
 
 Please follow these rules:
-
-1. Organize features into **general, high-level groups** that represent broad product domains, workflows, or modules. Avoid using specific feature names as group titles.
-<<<<<<< HEAD
-2. Each group should contain a list of **short task titles** (2–5 words), representing key items or subtasks relevant to that group.
-3. For each task, include a `"time_estimation"` field with an estimated time to complete the task in Days (in 0.25, 0.5, 1 day and so on).
-=======
-2. Each group should contain a list of **short task titles** (2-5 words), representing key items or subtasks relevant to that group.
-3. For each task, include a `"time_estimation"` field with an estimated time to complete the task in Days. Use realistic, experience-based estimates based on real-world data, typical team velocity, and experience from similar projects. Avoid underestimating or overestimating. The total time should reflect the actual effort required for the PRD, not a fixed target. Each estimate should be between 0.25 and 3 days.
->>>>>>> 56650136bb096913f4544da467821cc1d98cbf44
+1. Organize features into *general, high-level groups* that represent broad product domains, workflows, or modules. Avoid using specific feature names as group titles.
+2. Each group should contain a list of *short task titles* (2–5 words), representing key items or subtasks relevant to that group.
+3. For each task, include a "time_estimation" field with an estimated time to complete the task in Days (in 0.25, 0.5, 1 day and so on).
 4. Do not include descriptions, explanations, or formatting outside the JSON.
 5. Return only a clean JSON structure with this format:
 
@@ -49,7 +43,7 @@ Please follow these rules:
       {{
         "task": "Short task name",
         "time_estimation": "0.25"
-      }},s
+      }},
       ...
     ]
   }},
@@ -65,8 +59,16 @@ Here is the PRD:
         ]
     )
 
-    # Get the content and clean it from markdown
+    # Get the content and clean it from markdown/code block
     raw_content = response['choices'][0]['message']['content']
     cleaned_json = re.sub(r"^```json|```$", "", raw_content.strip(), flags=re.MULTILINE)
 
+    # Save the cleaned JSON to mondayCreation/board_data.json
+    output_dir = os.path.join(os.path.dirname(__file__), "../mondayCreation")
+    os.makedirs(output_dir, exist_ok=True)
+    output_path = os.path.join(output_dir, "board_data.json")
+    with open(output_path, "w") as f:
+        f.write(cleaned_json)
+
+    print(f"✅ JSON saved to {output_path}")
     return cleaned_json
