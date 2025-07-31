@@ -12,7 +12,6 @@ def split_text(text, max_length=4000):
     return [text[i:i+max_length] for i in range(0, len(text), max_length)]
 
 def generate_groups_from_pdf(file_stream):
-    # ✅ Extract text directly from uploaded PDF stream
     doc = fitz.open(stream=file_stream.read(), filetype="pdf")
     pdf_text = "\n".join(page.get_text() for page in doc)
 
@@ -36,9 +35,10 @@ def generate_groups_from_pdf(file_stream):
                       Please follow these rules:
                       1. Organize features into *general, high-level groups* that represent broad product domains, workflows, or modules. Avoid using specific feature names as group titles.
                       2. Each group should contain a list of *short task titles* (2–5 words), representing key items or subtasks relevant to that group.
-                      3. For each task, include a "time_estimation" field with an estimated time to complete the task in Days (in 0.25, 0.5, 1 day and so on).
+                      3. For each task, include a "time_estimation_AI" field with an estimated time to complete the task in Days (in 0.25, 0.5, 1 day and so on).
                       4. Do not include descriptions, explanations, or formatting outside the JSON.
-                      5. Return only a clean JSON structure with this format:
+                      5. Make sure you return only relevant groups and tasks for developers and designers. Don't include- Terminology, Overview, Tech Requirements, Table of contents, System Tech Spec and things like them.
+                      6. Return only a clean JSON structure with this format:
 
                       [
                         {{
@@ -46,7 +46,7 @@ def generate_groups_from_pdf(file_stream):
                           "items": [
                             {{
                               "task": "Short task name",
-                              "time_estimation": "0.25"
+                              "time_estimation_AI": "0.25"
                             }},
                             ...
                           ]
@@ -76,5 +76,5 @@ def generate_groups_from_pdf(file_stream):
         if isinstance(g, dict) and g.get("group") and g.get("items")
     ]
 
-    print("✅ PRD converted to board structure")
+    print("PRD converted to board structure")
     return json.dumps(all_groups)

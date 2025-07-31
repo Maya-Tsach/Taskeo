@@ -19,13 +19,15 @@ app.add_middleware(
 @app.post("/generate-board/")
 async def generate_board(
     file: UploadFile = File(...),
-    board_name: str = Form(...),
-    monday_api_key: str = Form(...)
+    monday_api_key: str = Form(...),
+    board_id: int = Form(None),
+    board_name: str = Form(None),
 ):
+
     # Step 1: Extract structured tasks from PDF
     try:
         print("Extracting project structure from PRD...")
-        raw_response = generate_groups_from_pdf(file.file)  # or use BytesIO(await file.read())
+        raw_response = generate_groups_from_pdf(file.file)  
     except Exception as e:
         return JSONResponse(status_code=400, content={"error": f"Failed to parse PDF: {str(e)}"})
 
@@ -56,6 +58,7 @@ async def generate_board(
             }
         },
         {"title": "Sprint", "type": "text"},
+        {"title": "Time Estimation", "type": "numbers"},
         {"title": "Timeline", "type": "timeline"},
         {"title": "Actual Time", "type": "numbers"},
         {"title": "Actual Timeline", "type": "timeline"}
@@ -63,7 +66,7 @@ async def generate_board(
 
     # Step 4: Create the Monday board
     try:
-        create_full_board(board_name, board_data, extra_columns, api_key=monday_api_key)
+        create_full_board(board_name, board_data, extra_columns, api_key=monday_api_key, board_id=board_id)
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": f"Board creation failed: {str(e)}"})
 
