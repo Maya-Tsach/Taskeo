@@ -24,6 +24,22 @@ def rename_board(board_id, new_name, api_key):
     else:
         print(f"✅ Board renamed to: {new_name}")
 
+def create_board(board_name, api_key):
+    query = f'''
+    mutation {{
+      create_board (board_name: "{board_name}", board_kind: private) {{
+        id
+      }}
+    }}
+    '''
+    response = requests.post(API_URL, json={'query': query}, headers=make_headers(api_key))
+    json_data = response.json()
+    if "errors" in json_data:
+        print("❌ Error creating board:", json_data["errors"])
+        return None
+    board_id = json_data["data"]["create_board"]["id"]
+    print(f"✅ Board created: {board_name} (ID: {board_id})")
+    return board_id
 
 
 def get_columns(board_id, api_key):

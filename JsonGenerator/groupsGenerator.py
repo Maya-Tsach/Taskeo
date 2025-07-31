@@ -31,14 +31,13 @@ def generate_groups_from_pdf(file_stream):
                     "role": "user",
                     "content": f"""
                       You are a product analyst assistant. Your task is to extract a structured project board from the following PRD.
-
-                      Please follow these rules:
-                      1. Organize features into *general, high-level groups* that represent broad product domains, workflows, or modules. Avoid using specific feature names as group titles.
-                      2. Each group should contain a list of *short task titles* (2–5 words), representing key items or subtasks relevant to that group.
-                      3. For each task, include a "time_estimation_AI" field with an estimated time to complete the task in Days (in 0.25, 0.5, 1 day and so on).
-                      4. Do not include descriptions, explanations, or formatting outside the JSON.
-                      5. Make sure you return only relevant groups and tasks for developers and designers. Don't include- Terminology, Overview, Tech Requirements, Table of contents, System Tech Spec and things like them.
-                      6. Return only a clean JSON structure with this format:
+                      Follow these instructions carefully:
+                      1. Organize features into *general, high-level groups* that represent broad product areas or workflows. Avoid using specific feature names (e.g. “Login Button”) as group titles — use broader categories like “Authentication” or “User Dashboard”.
+                      2. Each group must contain a list of **short task names** (2–5 words).
+                      3. For **each task**, you must include a key named `"time_estimation_AI"` (exact spelling) with an estimated time in days. Valid values: `"0.25"`, `"0.5"`, `"1"`, `"2"`, etc. ⚠️ Do not use `"time_estimation"` or any other variation.
+                      4. **Return ONLY JSON** — no comments, markdown, or extra explanations.
+                      5. Ignore any PRD sections that do not relate to developer/designer implementation tasks (e.g. Overview, Goals, Terminology, System Specs).
+                      6. The output **must** exactly match this format:
 
                       [
                         {{
